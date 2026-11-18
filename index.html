@@ -128,11 +128,11 @@ const ic=(k,c)=>`<svg class="i ${c||""}" viewBox="0 0 24 24" fill="none" stroke=
 document.getElementById("lg").innerHTML=ic("book")+"<span>我的藏書室</span>";
 document.getElementById("hs").innerHTML=ic("search");
 const app=document.getElementById("app");
-const BANNERS={index:"banner-index.jpg",ask:"banner-ask.jpg",about:"banner-about.jpg"}; // 各分頁頂端的橫幅圖片（與 index.html 放在同一層，想換圖就上傳同檔名的新圖片）
+const BANNERS={index:"images/banner-index.jpg",ask:"images/banner-ask.jpg",about:"images/banner-about.jpg"}; // 各分頁頂端的橫幅圖片（放在 images 資料夾，想換圖就上傳同檔名的新圖片）
 const banner=(k,t,sub)=>`<section class="banner" style="background-image:url('${BANNERS[k]}')"><h1>${t}</h1><p>${sub}</p></section>`;
 let F={theme:"全部",era:"全部",rate:"全部",status:"全部"},cur="home";
-const HERO_IMG="hero.jpg"; // 首頁主視覺照片（與 index.html 放在同一層）
-const COVER_DIR="cover-"; // 封面：與 index.html 同層放入 cover-書籍編號.jpg（例如 cover-1.jpg），找不到時自動使用預設封面
+const HERO_IMG="images/hero.jpg"; // 首頁主視覺照片（與 index.html 放在同一層）
+const COVER_DIR="images/covers/"; // 封面：放入 images/covers/書籍編號.jpg（例如 1.jpg），找不到時自動使用預設封面
 
 function heroArt(){
   if(HERO_IMG)return `<svg viewBox="0 0 10 10" preserveAspectRatio="xMidYMid slice"><image href="${HERO_IMG}" width="10" height="10" preserveAspectRatio="xMidYMid slice"/></svg>`;
