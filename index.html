@@ -123,8 +123,8 @@ document.getElementById("lg").innerHTML=ic("book")+"<span>我的藏書室</span>
 document.getElementById("hs").innerHTML=ic("search");
 const app=document.getElementById("app");
 let F={theme:"全部",era:"全部",rate:"全部",status:"全部"},cur="home";
-const HERO_IMG="images/hero.jpg"; // 首頁主視覺照片（圖片集中放在 images 資料夾）
-const COVER_DIR="images/covers/"; // 封面：放入 images/covers/書籍編號.jpg（例如 1.jpg），找不到時自動使用預設封面
+const HERO_IMG="hero.jpg"; // 首頁主視覺照片（與 index.html 放在同一層）
+const COVER_DIR="cover-"; // 封面：與 index.html 同層放入 cover-書籍編號.jpg（例如 cover-1.jpg），找不到時自動使用預設封面
 
 function heroArt(){
   if(HERO_IMG)return `<svg viewBox="0 0 10 10" preserveAspectRatio="xMidYMid slice"><image href="${HERO_IMG}" width="10" height="10" preserveAspectRatio="xMidYMid slice"/></svg>`;
