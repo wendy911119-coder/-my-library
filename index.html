@@ -48,6 +48,12 @@ h2::after{content:"";display:block;width:26px;height:1px;background:var(--accent
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:30px 22px}
 .book{background:none;border:0;padding:0;text-align:left;font:inherit;color:inherit;cursor:pointer}
 .cover{aspect-ratio:2/3;border-radius:3px 7px 7px 3px;display:flex;flex-direction:column;justify-content:space-between;padding:12px 10px;color:#fff;font-family:"Noto Serif TC",serif;font-weight:400;letter-spacing:.12em;box-shadow:inset 4px 0 0 rgba(0,0,0,.18),0 14px 26px -14px rgba(0,0,0,.5);filter:saturate(.55) brightness(1.05);overflow:hidden;transition:transform .25s}
+.banner{position:relative;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;background-size:cover;background-position:center;padding:40px 20px}
+.banner::before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(30,18,8,.38),rgba(30,18,8,.52))}
+.banner>*{position:relative}
+.banner h1{font-family:"Noto Serif TC",serif;font-weight:600;font-size:clamp(1.6rem,4vw,2.3rem);letter-spacing:.3em;margin:0;text-shadow:0 2px 14px rgba(0,0,0,.4)}
+.banner p{margin:8px 0 0;font-family:"Noto Serif TC",serif;letter-spacing:.15em;text-shadow:0 1px 8px rgba(0,0,0,.45)}
+.banner+.w{padding-top:6px}
 .cover span{font-size:.7rem;font-weight:300;opacity:.85}
 .cover{position:relative}.cover img.ci{position:absolute;inset:0;width:100%;height:100%;margin:0;object-fit:cover}
 .cover img{width:100%;height:100%;object-fit:cover;margin:-12px -10px}
@@ -122,6 +128,8 @@ const ic=(k,c)=>`<svg class="i ${c||""}" viewBox="0 0 24 24" fill="none" stroke=
 document.getElementById("lg").innerHTML=ic("book")+"<span>我的藏書室</span>";
 document.getElementById("hs").innerHTML=ic("search");
 const app=document.getElementById("app");
+const BANNERS={index:"banner-index.jpg",ask:"banner-ask.jpg",about:"banner-about.jpg"}; // 各分頁頂端的橫幅圖片（與 index.html 放在同一層，想換圖就上傳同檔名的新圖片）
+const banner=(k,t,sub)=>`<section class="banner" style="background-image:url('${BANNERS[k]}')"><h1>${t}</h1><p>${sub}</p></section>`;
 let F={theme:"全部",era:"全部",rate:"全部",status:"全部"},cur="home";
 const HERO_IMG="hero.jpg"; // 首頁主視覺照片（與 index.html 放在同一層）
 const COVER_DIR="cover-"; // 封面：與 index.html 同層放入 cover-書籍編號.jpg（例如 cover-1.jpg），找不到時自動使用預設封面
@@ -173,7 +181,7 @@ function chips(label,key,opts){
 function index(){
   const all=v=>[["全部","全部"]].concat(v.map(x=>[x,x]));
   const list=BOOKS.filter(b=>(F.theme==="全部"||b.theme===F.theme)&&(F.era==="全部"||era(b.year)===F.era)&&rateOk(b,F.rate)&&(F.status==="全部"||b.status===F.status));
-  app.innerHTML=`<div class="w"><h2>分類索引</h2><div class="filters">${chips("主題","theme",all(THEMES))}${chips("年代","era",all(ERAS))}${chips("評分","rate",RATES)}${chips("狀態","status",all(["已讀","閱讀中","未讀"]))}</div>
+  app.innerHTML=`${banner("index","分類索引","依主題、年代與評分，找到想讀的那一本書")}<div class="w"><div class="filters">${chips("主題","theme",all(THEMES))}${chips("年代","era",all(ERAS))}${chips("評分","rate",RATES)}${chips("狀態","status",all(["已讀","閱讀中","未讀"]))}</div>
   <p class="note">共 ${list.length} 本符合條件${list.length?"，點選書籍可查看完整資料與心得。":""}</p>
   ${list.length?`<div class="grid">${list.map(b=>card(b)).join("")}</div>`:`<p>沒有符合的書，試著放寬條件吧。</p>`}</div>`;
 }
@@ -208,12 +216,12 @@ const QS=[];
 // 在引號內貼上 Google 表單的嵌入網址（結尾為 /viewform?embedded=true）；留空則顯示「即將開放」
 const FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSfby1Nk1BUN6xxZWosyaT4L88a8WBhfb49EtR5OAZi1Nf9aSw/viewform?embedded=true";
 function ask(){
-  app.innerHTML=`<div class="w"><h2>訪客提問</h2><div class="filters"><p class="note" style="margin-top:0">對這裡的書、閱讀心得，或想請我推薦的書有任何問題，都歡迎留言。</p></div>${FORM_URL?`<p style="text-align:center"><a class="btn" style="display:inline-block;text-decoration:none" href="${esc(FORM_URL.replace("?embedded=true",""))}" target="_blank" rel="noopener">開啟提問表單</a></p><iframe src="${esc(FORM_URL)}" title="訪客提問表單" style="width:100%;height:760px;border:0">載入中…</iframe>`:'<p class="note" style="text-align:center">提問功能即將開放，敬請期待。</p>'}</div>`;
+  app.innerHTML=`${banner("ask","訪客提問","對這裡的書有任何想問的，都歡迎留言")}<div class="w"><div class="filters"><p class="note" style="margin-top:0">對這裡的書、閱讀心得，或想請我推薦的書有任何問題，都歡迎留言。</p></div>${FORM_URL?`<p style="text-align:center"><a class="btn" style="display:inline-block;text-decoration:none" href="${esc(FORM_URL.replace("?embedded=true",""))}" target="_blank" rel="noopener">開啟提問表單</a></p><iframe src="${esc(FORM_URL)}" title="訪客提問表單" style="width:100%;height:760px;border:0">載入中…</iframe>`:'<p class="note" style="text-align:center">提問功能即將開放，敬請期待。</p>'}</div>`;
 }
 // ===== 關於藏書室 =====
 function about(){
   const L=[["ig","Instagram","@w911119","https://www.instagram.com/w911119/"],["at","Threads","@w911119","https://www.threads.com/@w911119"],["mail","電子郵件","wendy911119@gmail.com","mailto:wendy911119@gmail.com"]];
-  app.innerHTML=`<div class="w ab"><h2>關於藏書室</h2>
+  app.innerHTML=`${banner("about","關於藏書室","關於這個書房，以及書房的主人")}<div class="w ab">
   <h3 class="serif">為什麼成立這個網頁</h3>
   <p>讀過的書，常常讀完就收進書架，心得與感受也跟著淡去。我想為自己的閱讀留下一點痕跡，所以建立了這個藏書室，記錄每一本書的出版資訊、閱讀狀態、評分與心得。</p>
   <p>書一多，要找就困難了，因此我把書依主題、年代與評分整理成索引，也加上搜尋，讓它不只是清單，而是一個真正找得到東西的書房。</p>
