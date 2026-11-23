@@ -118,6 +118,7 @@ const BOOKS=[
 const ERAS=["1999 年以前","2000–2009","2010–2019","2020 年以後"];
 const era=y=>y<2000?ERAS[0]:y<2010?ERAS[1]:y<2020?ERAS[2]:ERAS[3];
 const THEMES=[...new Set(BOOKS.map(b=>b.theme))];
+const PUBS=[...new Set(BOOKS.map(b=>b.publisher))];
 const RATES=[["全部","全部"],["5","5 星"],["4","4 星"],["3","3 星以下"],["none","未評分"]];
 const rateOk=(b,f)=>f==="全部"||(f==="5"&&b.rating===5)||(f==="4"&&b.rating===4)||(f==="3"&&b.rating&&b.rating<=3)||(f==="none"&&!b.rating);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -130,7 +131,7 @@ document.getElementById("hs").innerHTML=ic("search");
 const app=document.getElementById("app");
 const BANNERS={index:"images/banner-index.jpg",ask:"images/banner-ask.jpg",about:"images/banner-about.jpg"}; // 各分頁頂端的橫幅圖片（放在 images 資料夾，想換圖就上傳同檔名的新圖片）
 const banner=(k,t,sub)=>`<section class="banner" style="background-image:url('${BANNERS[k]}')"><h1>${t}</h1><p>${sub}</p></section>`;
-let F={theme:"全部",era:"全部",rate:"全部",status:"全部"},cur="home";
+let F={theme:"全部",era:"全部",rate:"全部",pub:"全部",status:"全部"},cur="home";
 const HERO_IMG="images/hero.jpg"; // 首頁主視覺照片（與 index.html 放在同一層）
 const COVER_DIR="images/covers/"; // 封面：放入 images/covers/書籍編號.jpg（例如 1.jpg），找不到時自動使用預設封面
 
@@ -176,12 +177,12 @@ function home(){
   <h2>從主題開始逛</h2><div class="row" style="justify-content:center">${THEMES.map(t=>`<button class="chip" data-theme="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>`;
 }
 function chips(label,key,opts){
-  return `<div class="row"><b>${label}</b>${opts.map(([v,t])=>`<button class="chip ${F[key]===v?"on":""}" data-k="${key}" data-v="${esc(v)}">${esc(t)}</button>`).join("")}</div>`;
+  return `<div class="row"><b>${label}</b>${opts.map(([v,t])=>`<button class="chip ${(F[key]||"全部")===v?"on":""}" data-k="${key}" data-v="${esc(v)}">${esc(t)}</button>`).join("")}</div>`;
 }
 function index(){
   const all=v=>[["全部","全部"]].concat(v.map(x=>[x,x]));
-  const list=BOOKS.filter(b=>(F.theme==="全部"||b.theme===F.theme)&&(F.era==="全部"||era(b.year)===F.era)&&rateOk(b,F.rate)&&(F.status==="全部"||b.status===F.status));
-  app.innerHTML=`${banner("index","分類索引","依主題、年代與評分，找到想讀的那一本書")}<div class="w"><div class="filters">${chips("主題","theme",all(THEMES))}${chips("年代","era",all(ERAS))}${chips("評分","rate",RATES)}${chips("狀態","status",all(["已讀","閱讀中","未讀"]))}</div>
+  const list=BOOKS.filter(b=>(F.theme==="全部"||b.theme===F.theme)&&(F.era==="全部"||era(b.year)===F.era)&&rateOk(b,F.rate)&&(!F.pub||F.pub==="全部"||b.publisher===F.pub)&&(F.status==="全部"||b.status===F.status));
+  app.innerHTML=`${banner("index","分類索引","依主題、年代與評分，找到想讀的那一本書")}<div class="w"><div class="filters">${chips("主題","theme",all(THEMES))}${chips("年代","era",all(ERAS))}${chips("評分","rate",RATES)}${chips("出版社","pub",all(PUBS))}${chips("狀態","status",all(["已讀","閱讀中","未讀"]))}</div>
   <p class="note">共 ${list.length} 本符合條件${list.length?"，點選書籍可查看完整資料與心得。":""}</p>
   ${list.length?`<div class="grid">${list.map(b=>card(b)).join("")}</div>`:`<p>沒有符合的書，試著放寬條件吧。</p>`}</div>`;
 }
